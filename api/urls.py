@@ -16,9 +16,9 @@ router.register('review', ProductReviewViewSet)
 router.register('product', ProductViewSet)
 router.register('switch', SwitchTypesViewSet)
 router.register('brands', BrandsViewSet)
-router.register('slidshow', SlidshowViewSet)
 
 urlpatterns = [
     path('store/', include(router.urls)),
-    path('auth/', include('rest_framework.urls', namespace='rest_framework'))
+    path('auth/', include('rest_framework.urls', namespace='rest_framework')),
+    path('store/slideshow/', SlidshowViewSet.as_view())
 ]

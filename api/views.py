@@ -1,6 +1,8 @@
 from django.contrib.auth.models import User, Group
 from rest_framework import viewsets, permissions
 from rest_framework.response import Response
+from rest_framework.views import APIView
+import json
 
 from api.serializers import (
     SwitchTypesSerializer, ProductImageSerializer, 
@@ -34,6 +36,31 @@ class ProductViewSet(viewsets.ModelViewSet):
     queryset = ProductModel.objects.all()
     serializer_class = ProductSerializer
 
-class SlidshowViewSet(viewsets.ModelViewSet):
-    queryset = SlidshowProductsModel.objects.all()
-    serializer_class = SlidshowProductsSerializer
+class SlidshowViewSet(APIView):
+    def get(self, request):
+        slide = SlidshowProductsModel.objects.order_by("-created_at")[0]
+        results = {
+            'id': slide.id,
+            'name': slide.name,
+            'products' : [{
+                    'id' : p.id,
+                    'model' : p.model_name,
+                    'name' : p.name,
+                    'brand' : p.brand_fk.name,
+                    'stars' : p.star_value,
+                    'slug' : p.slug,
+                    'price' : p.price,
+                    'main_image' : p.images.all()[0].url
+                } for p in slide.products.all()
+            ],
+            'created_at' : slide.created_at,
+            'updated_at' : slide.updated_at
+        }
+
+        data = {
+            'count': 1,
+            'filter' : 'recent',
+            'results': results
+        }
+
+        return Response(data)

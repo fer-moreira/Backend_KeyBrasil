@@ -34,7 +34,7 @@ class ProductImageAdmin (admin.ModelAdmin):
 @admin.register(ProductReviewModel)
 class ProductReviewAdmin (admin.ModelAdmin):
     search_fields = ('author_name', 'author_email')
-    list_display = ('author_name', 'author_email', 'review_rating','updated_at', 'created_at')
+    list_display = ('author_name', 'author_email', 'product_fk','review_rating','updated_at', 'created_at')
 
 @admin.register(ProductModel)
 class ProductAdmin (admin.ModelAdmin):

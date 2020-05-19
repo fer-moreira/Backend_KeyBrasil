@@ -40,14 +40,7 @@ class ProductImageModel (models.Model):
     created_at  = models.DateTimeField(auto_now_add=True, verbose_name='Created at')
 
     def preview(self):
-        return mark_safe("""
-        <img src="{0}" style="
-            max-width:300px; 
-            max-height:300px;
-            width:auto;
-            height:auto;
-        "/>
-        """.format(self.url))
+        return mark_safe("""<img src="{0}" style="max-width:300px;max-height:300px;width:auto;height:auto;"/>""".format(self.url))
 
     def __str__(self):
         return self.name
@@ -66,14 +59,7 @@ class SwitchTypesModel (models.Model):
     created_at  = models.DateTimeField(auto_now_add=True, verbose_name='Created at')
 
     def preview(self):
-        return mark_safe("""
-        <img src="{0}" style="
-            max-width:100px; 
-            max-height:100px; 
-            width:auto; 
-            height:auto;
-        "/>
-        """.format(self.images.all()[0].url))
+        return mark_safe("""<img src="{0}" style="max-width:100px;max-height:100px;width:auto;height:auto;"/>""".format(self.images.all()[0].url))
 
     def __str__(self):
         return  "{0} - {1}".format(self.id, self.name)
@@ -105,21 +91,19 @@ class ProductModel (models.Model):
     def star_value (self):
         """ Return calculated STARS ratio in review  """
         reviews = ProductReviewModel.objects.filter(product_fk__id=self.id)
+
+        if not reviews:
+            return 0
+
         max_rating = reviews.aggregate(sum_rating=Sum('review_rating')).get('sum_rating')
         rating_count = len(reviews)
         rating_ratio = (max_rating / rating_count)
+
         return rating_ratio
 
     def preview (self):
         """ Return first image from manytomany to show in admin """
-        return mark_safe("""
-        <img src="{0}" style="
-            max-width:300px;
-            max-height:300px; 
-            width:auto; 
-            height:auto;"
-        />
-        """.format(self.images.all()[0].url))
+        return mark_safe("""<img src="{0}" style="max-width:300px;max-height:300px;width:auto;height:auto;"/>""".format(self.images.all()[0].url))
 
 
     def __str__(self):
