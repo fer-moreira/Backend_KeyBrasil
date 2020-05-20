@@ -64,3 +64,25 @@ class SlidshowViewSet(APIView):
         }
 
         return Response(data)
+
+class ItemsGridViewSet(APIView):
+    def get(self, request):
+        products = ProductModel.objects.order_by("-created_at")[:10]
+        results = []
+
+        for item in products:
+            results.append({
+                'brand':item.brand_fk.name,
+                'name':item.name,
+                'main_image':item.images.all()[0].url,
+                'slug':item.slug,
+                'price':item.price
+            })
+
+        data = {
+            'count': 10,
+            'filter' : 'recent',
+            'results': results
+        }
+
+        return Response(data)
